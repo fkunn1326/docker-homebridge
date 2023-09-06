@@ -11,3 +11,12 @@
 # apt-get update
 # apt-get install -y python3
 #
+
+apt-get update
+apt-get install -y curl
+
+curl -fsSL https://tailscale.com/install.sh | sh
+
+tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
+
+tailscale up
