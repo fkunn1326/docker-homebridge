@@ -22,6 +22,8 @@ ENV S6_OVERLAY_VERSION=3.1.1.2 \
  HOME="/home/homebridge" \
  npm_config_prefix=/opt/homebridge
 
+ENV TAILSCALE_VERSION=1.48.1
+
 RUN set -x \
   && apt-get update \
   && apt-get install -y curl wget tzdata locales psmisc procps iputils-ping logrotate \
@@ -70,6 +72,14 @@ RUN case "$(uname -m)" in \
   && rm -rf /homebridge_${HOMEBRIDGE_PKG_VERSION}.deb \
   && chown -R root:root /opt/homebridge \
   && rm -rf /var/lib/homebridge
+
+RUN set -x \
+  && TS_FILE=tailscale_${TAILSCALE_VERSION}_amd64.tgz
+  && wget -q "https://pkgs.tailscale.com/stable/${TS_FILE}"
+  && tar xzf "${TS_FILE}" --strip-components=1
+  && cp -r tailscale tailscaled /render/
+  && mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
+  && /render/tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
 
 COPY rootfs /
 
