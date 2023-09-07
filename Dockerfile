@@ -78,8 +78,7 @@ RUN set -x \
   && wget -q "https://pkgs.tailscale.com/stable/${TS_FILE}" \
   && tar xzf "${TS_FILE}" --strip-components=1 \
   && cp -r tailscale tailscaled /render/ \
-  && mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale \
-  && /render/tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
+  && mkdir -p /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
 
 COPY rootfs /
 
